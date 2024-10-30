@@ -4,3 +4,5 @@ function getPaymentTokenFromAPI(success) {
   }
   // When success is false, return nothing (undefined)
 }
+
+module.exports = getPaymentTokenFromAPI;
