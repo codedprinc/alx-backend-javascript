@@ -1,26 +1,28 @@
 const fs = require('fs').promises;
 
-export const readDatabase = (path) => new Promise(async (resolve, reject) => {
-  try {
-    const data = await fs.readFile(path, 'utf8');
+// Use a default export as per ESLint's preference for single export modules
+const readDatabase = (path) => {
+  return fs.readFile(path, 'utf8')
+    .then((data) => {
+      const lines = data.split('\n');
+      const studentsData = lines.slice(1).filter((line) => line);
+      const studentsByField = {};
 
-    const lines = data.split('\n');
+      studentsData.forEach((student) => {
+        const [firstName, , , field] = student.split(',');
 
-    const studentsData = lines.slice(1).filter((line) => line);
-    const studentsByField = {};
+        if (!studentsByField[field]) {
+          studentsByField[field] = [];
+        }
 
-    studentsData.forEach((student) => {
-      const [firstName, , , field] = student.split(',');
+        studentsByField[field].push(firstName);
+      });
 
-      if (!studentsByField[field]) {
-        studentsByField[field] = [];
-      }
-
-      studentsByField[field].push(firstName);
+      return studentsByField;
+    })
+    .catch((error) => {
+      throw error;
     });
+};
 
-    resolve(studentsByField);
-  } catch (error) {
-    reject(error);
-  }
-});
+export default readDatabase;
