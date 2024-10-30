@@ -1,0 +1,1 @@
+### This folder contains projects involving data manipulation with arrays, sets and map objects

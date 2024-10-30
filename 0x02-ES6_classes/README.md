@@ -1,0 +1,1 @@
+### This folder contains projects about ES6 classes.

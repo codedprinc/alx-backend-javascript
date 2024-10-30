@@ -1,30 +1,36 @@
-import fs from 'fs';
+const fs = require('fs');
 
 const countStudents = (path) => {
+  let data;
+  let noOfStudents;
+  const studentsInMajor = {};
   try {
-    const data = fs.readFileSync(path, 'utf8');
-    const lines = data.split('\n').filter((line) => line.trim().length > 0);
-    const students = lines.slice(1);
-    
-    console.log(`Number of students: ${students.length}`);
-    
-    const studentsByField = {};
-    
-    students.forEach((student) => {
-      const [firstname, , , field] = student.split(',').map((item) => item.trim());
-      if (!studentsByField[field]) {
-        studentsByField[field] = [];
+    data = fs.readFileSync(path, 'utf8');
+    data = data.split('\n');
+    data = data.slice(1).filter((line) => line);
+    noOfStudents = data.length;
+
+    console.log('Number of students:', noOfStudents);
+
+    for (let i = 0; i < data.length; i += 1) {
+      const student = data[i].split(',');
+      const major = student.at(-1);
+      const firstName = student.at(0);
+
+      if (Object.keys(studentsInMajor).includes(major)) {
+        studentsInMajor[major].push(firstName);
+      } else {
+        studentsInMajor[major] = [firstName];
       }
-      studentsByField[field].push(firstname);
+    }
+
+    Object.entries(studentsInMajor).forEach(([key, students]) => {
+      const studentList = students.join(', ');
+      console.log(`Number of students in ${key}: ${students.length}. List: ${studentList}`);
     });
-    
-    Object.entries(studentsByField).forEach(([field, fieldStudents]) => {
-      console.log(`Number of students in ${field}: ${fieldStudents.length}. List: ${fieldStudents.join(', ')}`);
-    });
-    
   } catch (error) {
     throw new Error('Cannot load the database');
   }
 };
 
-export default countStudents;
+module.exports = countStudents;
