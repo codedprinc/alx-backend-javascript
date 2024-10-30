@@ -1,23 +1,33 @@
-const app = require("./api");
-// const request = require("supertest");
+const request = require('request');
+const { expect } = require('chai');
 
-// describe("Integration Test for API", () => {
-//   it("Should return 200 OK with correct message", (done) => {
-//     request(app)
-//       .get("/")
-//       .expect(200)
-//       .expect("Welcome to the payment system", done);
-//   });
-// });
+describe('Index page', () => {
+  const API_URL = 'http://localhost:7865';
 
-const request = require("request");
-const assert = require("assert");
+  it('should return correct status code 200', (done) => {
+    request.get(`${API_URL}/`, (error, response) => {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
 
-describe("Integration Test for API", () => {
-  it("Should return 200 OK with correct message", (done) => {
-    request.get("http://localhost:7865/", (error, response, body) => {
-      assert.strictEqual(response.statusCode, 200);
-      assert.strictEqual(body, "Welcome to the payment system");
+  it('should return correct result', (done) => {
+    request.get(`${API_URL}/`, (error, response, body) => {
+      expect(body).to.equal('Welcome to the payment system');
+      done();
+    });
+  });
+
+  it('should return correct content-type header', (done) => {
+    request.get(`${API_URL}/`, (error, response) => {
+      expect(response.headers['content-type']).to.include('text/html');
+      done();
+    });
+  });
+
+  it('should return 404 for incorrect endpoint', (done) => {
+    request.get(`${API_URL}/invalid-endpoint`, (error, response) => {
+      expect(response.statusCode).to.equal(404);
       done();
     });
   });
