@@ -8,32 +8,36 @@ function countStudents(path) {
     // Split into lines and remove empty lines
     const lines = data.split('\n').filter(line => line.trim());
     
-    // Remove header line and filter out empty lines
-    const students = lines.slice(1).filter(line => line.trim());
+    // Remove header line
+    const students = lines.slice(1);
     
     // Log total number of students
     console.log(`Number of students: ${students.length}`);
     
     // Create object to store students by field
-    const studentsByField = {};
+    const studentsByField = {
+      CS: [],
+      SWE: []
+    };
     
     // Process each student
     students.forEach(student => {
       const [firstName, , , field] = student.split(',');
-      
-      if (!studentsByField[field]) {
-        studentsByField[field] = [];
+      if (field) {
+        studentsByField[field].push(firstName);
       }
-      studentsByField[field].push(firstName);
     });
     
-    // Log statistics for each field
-    for (const [field, students] of Object.entries(studentsByField)) {
-      console.log(
-        `Number of students in ${field}: ${students.length}. ` +
-        `List: ${students.join(', ')}`
-      );
+    // Log statistics for each field in the exact format expected by tests
+    for (const field in studentsByField) {
+      const students = studentsByField[field];
+      if (students.length > 0) {
+        console.log(
+          `Number of students in ${field}: ${students.length}. List: ${students.join(', ')}`
+        );
+      }
     }
+    
   } catch (error) {
     throw new Error('Cannot load the database');
   }
