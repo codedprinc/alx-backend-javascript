@@ -1,26 +1,26 @@
-const fs = require('fs').promises;
+const { readFile } = require('fs');
 
-// Use a default export as per ESLint's preference for single export modules
-const readDatabase = (path) => fs.readFile(path, 'utf8')
-  .then((data) => {
-    const lines = data.split('\n');
-    const studentsData = lines.slice(1).filter((line) => line);
-    const studentsByField = {};
-
-    studentsData.forEach((student) => {
-      const [firstName, , , field] = student.split(',');
-
-      if (!studentsByField[field]) {
-        studentsByField[field] = [];
+module.exports = function readDatabase (filePath) {
+  const students = {};
+  return new Promise((resolve, reject) => {
+    readFile(filePath, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        const lines = data.toString().split('\n');
+        const noHeader = lines.slice(1);
+        for (let i = 0; i < noHeader.length; i += 1) {
+          if (noHeader[i]) {
+            const field = noHeader[i].toString().split(',');
+            if (Object.prototype.hasOwnProperty.call(students, field[3])) {
+              students[field[3]].push(field[0]);
+            } else {
+              students[field[3]] = [field[0]];
+            }
+          }
+        }
+        resolve(students);
       }
-
-      studentsByField[field].push(firstName);
     });
-
-    return studentsByField;
-  })
-  .catch((error) => {
-    throw error;
   });
-
-export default readDatabase;
+};
