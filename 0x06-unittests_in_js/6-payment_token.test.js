@@ -1,9 +1,8 @@
-const chai = require('chai');
-const expect = chai.expect;
+const { expect } = require('chai');
 const getPaymentTokenFromAPI = require('./6-payment_token');
 
 describe('getPaymentTokenFromAPI', () => {
-  it('should return a resolved promise with successful response when success is true', (done) => {
+  it('should return a successful response from the API when success is true', (done) => {
     getPaymentTokenFromAPI(true)
       .then((response) => {
         expect(response).to.deep.equal({ data: 'Successful response from the API' });
@@ -14,8 +13,9 @@ describe('getPaymentTokenFromAPI', () => {
       });
   });
 
-  it('should return undefined when success is false', () => {
+  it('should return undefined when success is false', (done) => {
     const result = getPaymentTokenFromAPI(false);
-    expect(result).to.be.undefined;
+    expect(result).to.equal(undefined);
+    done();
   });
 });
