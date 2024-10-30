@@ -6,10 +6,10 @@ const countStudents = (path) => new Promise((resolve, reject) => {
       const lines = data.split('\n');
       let result = '';
       const studentsData = lines.slice(1).filter((line) => line);
-      
+
       console.log(`Number of students: ${studentsData.length}`);
       result += `Number of students: ${studentsData.length}\n`;
-      
+
       const studentsByField = {};
       studentsData.forEach((student) => {
         const [firstName, , , field] = student.split(',');
@@ -18,12 +18,12 @@ const countStudents = (path) => new Promise((resolve, reject) => {
         }
         studentsByField[field].push(firstName);
       });
-      
+
       Object.entries(studentsByField).forEach(([field, students]) => {
         console.log(`Number of students in ${field}: ${students.length}. List: ${students.join(', ')}`);
         result += `Number of students in ${field}: ${students.length}. List: ${students.join(', ')}\n`;
       });
-      
+
       resolve(result);
     })
     .catch(() => {
